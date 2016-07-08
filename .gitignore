@@ -148,4 +148,4 @@ fabric.properties
 # *.ipr
 
 ### self ###
-idea
+.idea
