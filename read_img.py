@@ -8,5 +8,6 @@ print px
 
 ret,thresh1 = cv2.threshold(img,200,255,cv2.THRESH_BINARY)
 ret,thresh2 = cv2.threshold(img,254,255,cv2.THRESH_BINARY)
-cv2.imshow("threshold", thresh2)
+ret,thresh3 = cv2.threshold(img,208,255,cv2.THRESH_BINARY_INV)
+cv2.imshow("threshold", thresh3)
 cv2.waitKey(0)
