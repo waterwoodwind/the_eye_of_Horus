@@ -48,10 +48,10 @@ cv2.waitKey(0)
 x_s_list = x_shadow_list(line_1)
 x_start_list, x_end_list = shadow_border(x_s_list)
 
-Character_1 = line_1[:, x_start_list[0]:x_end_list[0]+1]
+Character_1 = line_1[:, x_start_list[1]:x_end_list[1]+1]
 cv2.imshow("Character_1", Character_1)
 cv2.waitKey(0)
-
+cv2.imwrite('Character_2.bmp', Character_1)
 
 
 
