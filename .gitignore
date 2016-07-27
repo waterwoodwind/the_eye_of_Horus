@@ -149,3 +149,4 @@ fabric.properties
 
 ### self ###
 .idea
+*.bmp
