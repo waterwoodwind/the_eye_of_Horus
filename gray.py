@@ -18,7 +18,7 @@ class Pre_treat(object):
             for j in range(image_np.shape[1]):
                 if image_np[i,j]<>0:
                     y_shadow[i] = y_shadow[i] + image_np[i,j]
-        
+           
         return y_shadow
     
     def x_shadow_list(self, image_np):
@@ -56,26 +56,66 @@ class Pre_treat(object):
         x_s_list = self.x_shadow_list(img)
         x_start_list, x_end_list = self.shadow_border(x_s_list)
         return y_start_list, y_end_list, x_start_list, x_end_list         
-        
+
+    def del_surplus_y_line(self, y_start_list, y_end_list):
+        #有选中蓝色背景的去除第一个end
+        y_end_list.pop(0)
+        start_number = len(y_start_list)
+        end_number = len(y_end_list)
+                
+        if start_number > end_number:
+            y_start_list.pop()
+        for i in range(end_number):
+            diff = y_end_list[i] - y_start_list[i] + 1
+            print y_end_list[i], y_start_list[i]
+            print i, diff
+            if diff <13:
+                y_start_list.pop(i)
+                y_end_list.pop(i)
+            elif diff == 14:
+                y_start_list[i] = y_start_list[i] + 1
+        return y_start_list, y_end_list
+                
 img_dir = "single_img"
 for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
+    img_name = img_file[:-4]
     print img_path
     thresh_img = Pre_treat().get_data_thresh_img(img_path)
-    
+    img_flt = thresh_img[:,162:426]
+    img_index = thresh_img[:, 0:60]
     y_start_list, y_end_list, x_start_list, x_end_list = \
-    Pre_treat().y_x_border_list(thresh_img)
-    print y_start_list, y_end_list, x_start_list, x_end_list
+    Pre_treat().y_x_border_list(img_index)
     
-    #有选中蓝色背景的去除第一个end
-    y_end_list.pop(0)
-    line_1 = thresh_img[y_start_list[0]:y_end_list[0]+1,:]
-    cv2.imshow("line_1", line_1)
-    cv2.waitKey(0)
-    x_s_list = Pre_treat().x_shadow_list(line_1)
-    x_start_list, x_end_list = Pre_treat().shadow_border(x_s_list)
+    y_start_list, y_end_list = \
+    Pre_treat().del_surplus_y_line(y_start_list, y_end_list)
     
-    Character_1 = line_1[:, x_start_list[1]:x_end_list[1]+1]
-    cv2.imshow("Character_1", Character_1)
-    cv2.waitKey(0)
-    #cv2.imwrite('Character_1.bmp', Character_1)
+    
+    for i in range(len(y_start_list)):
+        line = img_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
+        cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.tif', line)
+        
+        
+
+        for j in range(0,72,12):
+            Character = line[:, j: j+12]
+            #cv2.imshow("Character_1", Character_1)
+            #cv2.waitKey(0)
+            if Character.sum()<>0:
+                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', Character)
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
