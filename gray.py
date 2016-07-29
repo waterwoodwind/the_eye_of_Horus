@@ -7,6 +7,9 @@ Created on Wed Jul 27 17:03:53 2016
 
 import cv2
 import os
+import pandas as pd
+import numpy as np
+
 class Pre_treat(object):
     
     def __init__(self):
@@ -75,8 +78,9 @@ class Pre_treat(object):
             elif diff == 14:
                 y_start_list[i] = y_start_list[i] + 1
         return y_start_list, y_end_list
-                
-img_dir = "single_img"
+
+character_list = []
+img_dir = "blue_img"
 for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
     img_name = img_file[:-4]
@@ -94,16 +98,22 @@ for img_file in os.listdir(img_dir):
     for i in range(len(y_start_list)):
         line = img_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
         cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.tif', line)
-        
-        
-
         for j in range(0,72,12):
             Character = line[:, j: j+12]
             #cv2.imshow("Character_1", Character_1)
             #cv2.waitKey(0)
             if Character.sum()<>0:
                 cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', Character)
+                character_list.append(Character.tolist())
 
+character_series = pd.Series(character_list)
+no_repeat = character_series.value_counts()
+for number,item in enumerate(no_repeat.index):
+    print item, no_repeat.iloc[number]
+    np_item = np.array(item)        
+    cv2.imwrite('no_repeat_character/' + \
+    str(no_repeat.iloc[number]) + '_' + \
+    str(number) + '.tif', np_item)
         
         
         
