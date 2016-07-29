@@ -98,7 +98,7 @@ for img_file in os.listdir(img_dir):
     for i in range(len(y_start_list)):
         line = img_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
         cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.tif', line)
-        for j in range(0,72,12):
+        for j in range(221, 257,12):
             Character = line[:, j: j+12]
             #cv2.imshow("Character_1", Character_1)
             #cv2.waitKey(0)
