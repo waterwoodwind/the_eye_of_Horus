@@ -51,7 +51,7 @@ class Pre_treat(object):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         data_img = gray[171:1006+1,4:1907+1]
         ret,thresh_img = cv2.threshold(data_img,208,255,cv2.THRESH_BINARY_INV)
-        return thresh_img
+        return thresh_img, data_img
     
     def y_x_border_list(self, img):
         y_s_list = self.y_shadow_list(img)
@@ -85,8 +85,9 @@ for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
     img_name = img_file[:-4]
     print img_path
-    thresh_img = Pre_treat().get_data_thresh_img(img_path)
+    thresh_img, data_img = Pre_treat().get_data_thresh_img(img_path)
     img_flt = thresh_img[:,162:426]
+    data_flt = data_img[:, 162:426]
     img_index = thresh_img[:, 0:60]
     y_start_list, y_end_list, x_start_list, x_end_list = \
     Pre_treat().y_x_border_list(img_index)
@@ -97,7 +98,8 @@ for img_file in os.listdir(img_dir):
     
     for i in range(len(y_start_list)):
         line = img_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
-        cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.tif', line)
+        line_color = data_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
+        cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.bmp', line_color)
         for j in range(221, 257,12):
             Character = line[:, j: j+12]
             #cv2.imshow("Character_1", Character_1)
