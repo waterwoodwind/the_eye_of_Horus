@@ -80,14 +80,16 @@ class Pre_treat(object):
         return y_start_list, y_end_list
 
 character_list = []
-img_dir = "blue_img"
+#img_dir = "blue_img"
+img_dir = "single_img"
 for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
     img_name = img_file[:-4]
     print img_path
     thresh_img, data_img = Pre_treat().get_data_thresh_img(img_path)
-    img_flt = thresh_img[:,162:426]
+    img_thresh_flt = thresh_img[:,162:426]
     data_flt = data_img[:, 162:426]
+    data_plan_arrive = data_img[:, 1403:1466+1]
     img_index = thresh_img[:, 0:60]
     y_start_list, y_end_list, x_start_list, x_end_list = \
     Pre_treat().y_x_border_list(img_index)
@@ -95,11 +97,17 @@ for img_file in os.listdir(img_dir):
     y_start_list, y_end_list = \
     Pre_treat().del_surplus_y_line(y_start_list, y_end_list)
     
+    #加入蓝色区域
+    y_start_list.insert(0, 7)
+    y_end_list.insert(0, 19)
     
     for i in range(len(y_start_list)):
-        line = img_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
+        line = img_thresh_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
         line_color = data_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
-        cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.bmp', line_color)
+        line_data_plan_arrive = \
+        data_plan_arrive[y_start_list[i]-3:y_end_list[i]+1+3,:]
+        line_merge = np.hstack((line_color, line_data_plan_arrive))
+        cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.bmp', line_merge)
         for j in range(221, 257,12):
             Character = line[:, j: j+12]
             #cv2.imshow("Character_1", Character_1)
