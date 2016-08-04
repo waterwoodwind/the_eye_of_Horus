@@ -72,11 +72,17 @@ class Pre_treat(object):
             diff = y_end_list[i] - y_start_list[i] + 1
             print y_end_list[i], y_start_list[i]
             print i, diff
+            #当出现数据高度不足时            
             if diff <13:
                 y_start_list.pop(i)
                 y_end_list.pop(i)
+            #当出现14行的字母Q时
             elif diff == 14:
                 y_start_list[i] = y_start_list[i] + 1
+            #当末尾出现航班的那一行高度太短时
+            if y_end_list[i] > 832:
+                y_start_list.pop(i)
+                y_end_list.pop(i)
         return y_start_list, y_end_list
 
 character_list = []

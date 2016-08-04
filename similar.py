@@ -47,6 +47,6 @@ if __name__ == '__main__':
     np_all = np.array(list_img)
     
     random_state = 170
-    y_pred = KMeans(init='k-means++', n_clusters=20, n_init=20)
+    y_pred = KMeans(init='k-means++', n_clusters=10, n_init=10)
     y_pred.fit(np_all)
     print y_pred
