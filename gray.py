@@ -80,8 +80,8 @@ class Pre_treat(object):
         return y_start_list, y_end_list
 
 character_list = []
-#img_dir = "blue_img"
-img_dir = "single_img"
+img_dir = "blue_img"
+#img_dir = "single_img"
 for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
     img_name = img_file[:-4]
