@@ -80,8 +80,8 @@ class Pre_treat(object):
         return y_start_list, y_end_list
 
 character_list = []
-img_dir = "blue_img"
-#img_dir = "single_img"
+#img_dir = "blue_img"
+img_dir = "single_img"
 for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
     img_name = img_file[:-4]
@@ -97,9 +97,12 @@ for img_file in os.listdir(img_dir):
     y_start_list, y_end_list = \
     Pre_treat().del_surplus_y_line(y_start_list, y_end_list)
     
-    #加入蓝色区域
+    #加入第一行蓝色区域
     y_start_list.insert(0, 7)
     y_end_list.insert(0, 19)
+    
+    #对第一行蓝色区域进行反色处理
+    ret,thresh_img[7-3:19+1+3,:] = cv2.threshold(thresh_img[7-3:19+1+3,:],254,255,cv2.THRESH_BINARY_INV)
     
     for i in range(len(y_start_list)):
         line = img_thresh_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
