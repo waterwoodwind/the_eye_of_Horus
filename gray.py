@@ -10,6 +10,18 @@ import os
 import pandas as pd
 import numpy as np
 
+import shutil
+def clear_dirs(path):
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    os.makedirs(path)
+    
+def clear_dir():
+    path_list = ["line", "character", "no_repeat_character"]
+    for item in path_list:
+        clear_dirs(item)
+    
+    
 class Pre_treat(object):
     
     def __init__(self):
@@ -85,6 +97,7 @@ class Pre_treat(object):
                 y_end_list.pop(i)
         return y_start_list, y_end_list
 
+clear_dir()
 character_list = []
 #img_dir = "blue_img"
 img_dir = "single_img"
