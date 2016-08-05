@@ -109,7 +109,9 @@ for img_file in os.listdir(img_dir):
     img_thresh_flt = thresh_img[:,162:426]
     data_flt = data_img[:, 162:426]
     data_plan_arrive = data_img[:, 1403:1466+1]
-    img_index = thresh_img[:, 0:60]
+    #避免边缘的锯齿，缩小边缘
+    img_index = thresh_img[:, 9:52]
+    
     y_start_list, y_end_list, x_start_list, x_end_list = \
     Pre_treat().y_x_border_list(img_index)
     
