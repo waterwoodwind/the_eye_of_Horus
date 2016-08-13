@@ -23,7 +23,8 @@ two_index_start = 3
 two_index_end = 43
 line_plane_number_start = 93
 line_plane_number_end = 132
-
+line_flt_number_start = 1
+line_flt_number_end = 60
 character_width = 9
 
 def clear_dirs(path):
@@ -77,7 +78,7 @@ class Pre_treat(object):
         img=cv2.imread(img_path)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         data_img = gray[zero_data_height_start:zero_data_height_end+1,4:1907+1]
-        ret,thresh_img = cv2.threshold(data_img,208,255,cv2.THRESH_BINARY_INV)
+        ret,thresh_img = cv2.threshold(data_img,50,255,cv2.THRESH_BINARY_INV)
         return thresh_img, data_img
     
     def y_x_border_list(self, img):
@@ -114,7 +115,7 @@ class Pre_treat(object):
 
 clear_dir()
 character_list = []
-#img_dir = "blue_img"
+#img_dir = "multi_img"
 img_dir = "single_img"
 for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
