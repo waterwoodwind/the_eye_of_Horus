@@ -147,11 +147,17 @@ if __name__ == '__main__':
                                                  line_thresh_arrive,
                                                  0, 
                                                  39 + 1)
-            list_flt_data.append([str_flt_number, str_plane_number, str_stand_number])            
+            
+            list_flt_data.append([str_flt_number, 
+                                  str_plane_number, 
+                                  str_stand_number, 
+                                  str_plan_arrive_number])            
+            
             print str_flt_number, str_plane_number, str_stand_number, str_plan_arrive_number
     
     df_flt_data = pd.DataFrame(list_flt_data)
-    df_flt_data.to_csv(u'航班号_机号_机位.csv', header=False, index=False)
+    df_flt_data.to_csv(u'航班号_机号_机位.csv', encoding= 'utf-8', header=False, index=False)
+    df_flt_data.to_excel(u'航班号_机号_机位.xlsx', encoding= 'utf-8', header=False, index=False)
     
     
     
