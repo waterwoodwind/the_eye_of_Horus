@@ -25,6 +25,8 @@ line_plane_number_start = 93
 line_plane_number_end = 132
 line_flt_number_start = 1
 line_flt_number_end = 60
+line_stand_start = 179
+line_stand_end = 208
 character_width = 9
 
 def clear_dirs(path):
@@ -115,8 +117,8 @@ class Pre_treat(object):
 
 clear_dir()
 character_list = []
-#img_dir = "multi_img"
-img_dir = "single_img"
+img_dir = "multi_img"
+#img_dir = "single_img"
 for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
     img_name = img_file[:-4]
@@ -148,12 +150,30 @@ for img_file in os.listdir(img_dir):
         data_plan_arrive[y_start_list[i]-3:y_end_list[i]+1+3,:]
         line_merge = np.hstack((line_color, line_data_plan_arrive))
         cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.bmp', line_merge)
+        
+        
+        for j in range(line_flt_number_start, line_flt_number_end + 1,character_width+1):
+            Character = line[:, j: j+character_width+1]
+            #cv2.imshow("Character_1", Character_1)
+            #cv2.waitKey(0)
+            if Character.sum()<>0:
+                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + 'flt.tif', Character)
+                character_list.append(Character.tolist())
+                
         for j in range(line_plane_number_start, line_plane_number_end + 1,character_width+1):
             Character = line[:, j: j+character_width+1]
             #cv2.imshow("Character_1", Character_1)
             #cv2.waitKey(0)
             if Character.sum()<>0:
-                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', Character)
+                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + 'plane.tif', Character)
+                character_list.append(Character.tolist())
+                
+        for j in range(line_stand_start, line_stand_end + 1,character_width+1):
+            Character = line[:, j: j+character_width+1]
+            #cv2.imshow("Character_1", Character_1)
+            #cv2.waitKey(0)
+            if Character.sum()<>0:
+                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + 'plane.tif', Character)
                 character_list.append(Character.tolist())
 
 character_series = pd.Series(character_list)
