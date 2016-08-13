@@ -11,6 +11,9 @@ from gray import Pre_treat
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, svm, metrics
 
+
+from matplotlib import pyplot as plt
+from sklearn.decomposition import PCA
 dir_path = 'train'
 test_dir_path = 'test'
 def load_data(dir_path):
@@ -49,3 +52,26 @@ predicted = classifier.predict(test_data)
 print("Classification report for classifier %s:\n%s\n"
       % (classifier, metrics.classification_report(expected, predicted)))
 print("Confusion matrix:\n%s" % metrics.confusion_matrix(expected, predicted))
+
+
+pca = PCA(n_components=2, copy=True)
+    
+type1_x = []
+type1_y = []
+
+
+new_data = pca.fit_transform(np_all)
+for i in range(len(new_data)):
+    type1_x.append(new_data[i][0])
+    type1_y.append(new_data[i][1])
+
+from sklearn.lda import LDA
+type1_x = []
+type1_y = []
+
+new_data = LDA(n_components=2).fit_transform(np_all, np_digits)
+for i in range(len(new_data)):
+    type1_x.append(new_data[i][0])
+    type1_y.append(new_data[i][1])
+
+plt.scatter(type1_x,type1_y,c=np_digits*3)

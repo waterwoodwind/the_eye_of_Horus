@@ -11,6 +11,8 @@ import numpy as np
 from numpy import linalg as la
 from sklearn.cluster import KMeans
 
+from matplotlib import pyplot as plt
+from sklearn.decomposition import PCA
 #欧式距离
 def euclidSimilar(inA,inB):
     return 1.0/(1.0+la.norm(inA-inB))
@@ -50,3 +52,19 @@ if __name__ == '__main__':
     y_pred = KMeans(init='k-means++', n_clusters=10, n_init=10)
     y_pred.fit(np_all)
     print y_pred
+    
+    
+    
+    
+    pca = PCA(n_components=2, copy=True)
+    
+    type1_x = []
+    type1_y = []
+    
+    
+    new_data = pca.fit_transform(np_all)
+    for i in range(len(new_data)):
+        type1_x.append(new_data[i][0])
+        type1_y.append(new_data[i][1])
+        
+    plt.scatter(type1_x,type1_y)
