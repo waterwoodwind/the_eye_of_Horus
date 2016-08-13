@@ -151,3 +151,4 @@ fabric.properties
 .idea
 *.bmp
 *.tif
+航班号_机号_机位.csv

@@ -81,6 +81,7 @@ if __name__ == '__main__':
     character_list = []
     img_dir = "multi_img"
     #img_dir = "single_img"
+    list_flt_data = []
     for img_file in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img_file)
         img_name = img_file[:-4]
@@ -134,6 +135,7 @@ if __name__ == '__main__':
                                          line_stand_start, 
                                          line_stand_end + 1)
             
+            list_flt_data.append([str_flt_number, str_plane_number, str_stand_number])            
             print str_flt_number, str_plane_number, str_stand_number
     
     
