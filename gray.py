@@ -12,13 +12,14 @@ import numpy as np
 
 import shutil
 
+
+
 zero_data_height_start = 167
 zero_data_height_end = 1002
 
 two_flt_width_start = 124
 two_flt_width_end = 337
-two_plan_lanch_start = 805
-two_plan_lanch_end = 860
+
 two_index_start = 3
 two_index_end = 43
 line_plane_number_start = 93
@@ -27,8 +28,8 @@ line_flt_number_start = 1
 line_flt_number_end = 60
 line_stand_start = 179
 line_stand_end = 208
-line_data_plan_arrive_start = 9
-line_data_plan_arrive_end = 48
+line_data_plan_arrive_start = 0
+line_data_plan_arrive_end = 39
 character_width = 9
 
 def clear_dirs(path):
@@ -40,7 +41,30 @@ def clear_dir():
     path_list = ["line", "character", "no_repeat_character"]
     for item in path_list:
         clear_dirs(item)
+
+class header(object):
     
+    def __init__(self):
+        self.height_start = 119
+        self.height_end = 163
+        self.width_start = 2
+        self.width_end = 1889
+
+    def header_index(self, gray):
+        gray_header = gray[header().height_start:header().height_end, \
+                           header().width_start:header().width_end]
+        ret,thresh_header = cv2.threshold(gray_header,220,255,cv2.THRESH_BINARY_INV)
+        x_shadow = Pre_treat().x_shadow_list(thresh_header)
+        start_index,end_index = Pre_treat().shadow_border(x_shadow)
+        return start_index
+        
+    def plan_arrive_start(self, gray):
+        start_index = self.header_index(gray)
+        return start_index[18] + 3
+    
+    def change_arrive_start(self, gray):
+        start_index = self.header_index(gray)
+        return start_index[19] + 3   
     
 class Pre_treat(object):
     
@@ -118,17 +142,23 @@ class Pre_treat(object):
 if __name__ == '__main__':
     clear_dir()
     character_list = []
-    img_dir = "multi_img"
-    #img_dir = "single_img"
+    #img_dir = "multi_img"
+    img_dir = "single_img"
     for img_file in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img_file)
         img_name = img_file[:-4]
         print img_path
+        #最原始的图
+        img = cv2.imread(img_path)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # 计算预达、变更到达的序号
+        plan_arrive_start = header().plan_arrive_start(gray)
+        #含航班数据的图
         thresh_img, data_gray_img = Pre_treat().get_data_thresh_img(img_path)
         img_thresh_flt = thresh_img[:, two_flt_width_start:two_flt_width_end + 1]
-        img_thresh_plan_arrive = thresh_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
+        img_thresh_plan_arrive = thresh_img[:, plan_arrive_start:plan_arrive_start+44]
         data_flt = data_gray_img[:, two_flt_width_start:two_flt_width_end + 1]
-        data_plan_arrive = data_gray_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
+        data_plan_arrive = data_gray_img[:, plan_arrive_start:plan_arrive_start+44]
         #避免边缘的锯齿，缩小边缘
         img_index = thresh_img[:, two_index_start:two_index_end +1]
         

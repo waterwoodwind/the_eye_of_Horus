@@ -9,6 +9,7 @@ import cv2
 import os
 import numpy as np
 from gray import Pre_treat
+from gray import header
 
 
 import pandas as pd
@@ -86,11 +87,18 @@ if __name__ == '__main__':
         img_path = os.path.join(img_dir, img_file)
         img_name = img_file[:-4]
         print img_path
+        #最原始的图
+        img = cv2.imread(img_path)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # 计算预达、变更到达的序号
+        plan_arrive_start = header().plan_arrive_start(gray)
+        #含航班数据的图
         thresh_img, data_gray_img = Pre_treat().get_data_thresh_img(img_path)
         img_thresh_flt = thresh_img[:, two_flt_width_start:two_flt_width_end + 1]
-        img_thresh_plan_arrive = thresh_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
+        img_thresh_plan_arrive = thresh_img[:, plan_arrive_start:plan_arrive_start+44]
         data_flt = data_gray_img[:, two_flt_width_start:two_flt_width_end + 1]
-        data_plan_arrive = data_gray_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
+        data_plan_arrive = data_gray_img[:, plan_arrive_start:plan_arrive_start+44]
+        
         #避免边缘的锯齿，缩小边缘
         img_index = thresh_img[:, two_index_start:two_index_end +1]
         
@@ -134,9 +142,13 @@ if __name__ == '__main__':
                                          line,
                                          line_stand_start, 
                                          line_stand_end + 1)
-            
+                                         
+            str_plan_arrive_number = np_to_digit(recognition_dict, 
+                                                 line_thresh_arrive,
+                                                 0, 
+                                                 39 + 1)
             list_flt_data.append([str_flt_number, str_plane_number, str_stand_number])            
-            print str_flt_number, str_plane_number, str_stand_number
+            print str_flt_number, str_plane_number, str_stand_number, str_plan_arrive_number
     
     df_flt_data = pd.DataFrame(list_flt_data)
     df_flt_data.to_csv(u'航班号_机号_机位.csv', header=False, index=False)
