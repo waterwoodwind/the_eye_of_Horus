@@ -138,8 +138,8 @@ if __name__ == '__main__':
             list_flt_data.append([str_flt_number, str_plane_number, str_stand_number])            
             print str_flt_number, str_plane_number, str_stand_number
     
-    
-    
+    df_flt_data = pd.DataFrame(list_flt_data)
+    df_flt_data.to_csv(u'航班号_机号_机位.csv', header=False, index=False)
     
     
     
