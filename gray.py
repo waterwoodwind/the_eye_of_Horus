@@ -102,8 +102,6 @@ class Pre_treat(object):
             y_start_list.pop()
         for i in range(end_number):
             diff = y_end_list[i] - y_start_list[i] + 1
-            print y_end_list[i], y_start_list[i]
-            print i, diff
             #当出现数据高度不足时            
             if diff <13:
                 y_start_list.pop(i)
