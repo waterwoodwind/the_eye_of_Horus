@@ -77,9 +77,9 @@ class Pre_treat(object):
     def get_data_thresh_img(self, img_path):    
         img=cv2.imread(img_path)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        data_img = gray[zero_data_height_start:zero_data_height_end+1,4:1907+1]
-        ret,thresh_img = cv2.threshold(data_img,50,255,cv2.THRESH_BINARY_INV)
-        return thresh_img, data_img
+        data_gray_img = gray[zero_data_height_start:zero_data_height_end+1,4:1907+1]
+        ret,thresh_img = cv2.threshold(data_gray_img,160,255,cv2.THRESH_BINARY_INV)
+        return thresh_img, data_gray_img
     
     def y_x_border_list(self, img):
         y_s_list = self.y_shadow_list(img)
@@ -121,10 +121,10 @@ for img_file in os.listdir(img_dir):
     img_path = os.path.join(img_dir, img_file)
     img_name = img_file[:-4]
     print img_path
-    thresh_img, data_img = Pre_treat().get_data_thresh_img(img_path)
+    thresh_img, data_gray_img = Pre_treat().get_data_thresh_img(img_path)
     img_thresh_flt = thresh_img[:,two_flt_width_start:two_flt_width_end + 1]
-    data_flt = data_img[:, two_flt_width_start:two_flt_width_end + 1]
-    data_plan_arrive = data_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
+    data_flt = data_gray_img[:, two_flt_width_start:two_flt_width_end + 1]
+    data_plan_arrive = data_gray_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
     #避免边缘的锯齿，缩小边缘
     img_index = thresh_img[:, two_index_start:two_index_end +1]
     
