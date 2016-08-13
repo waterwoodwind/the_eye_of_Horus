@@ -17,8 +17,8 @@ zero_data_height_end = 1002
 
 two_flt_width_start = 124
 two_flt_width_end = 337
-two_plan_lanch_start = 797
-two_plan_lanch_end = 850
+two_plan_lanch_start = 805
+two_plan_lanch_end = 860
 two_index_start = 3
 two_index_end = 43
 line_plane_number_start = 93
@@ -27,6 +27,8 @@ line_flt_number_start = 1
 line_flt_number_end = 60
 line_stand_start = 179
 line_stand_end = 208
+line_data_plan_arrive_start = 9
+line_data_plan_arrive_end = 48
 character_width = 9
 
 def clear_dirs(path):
@@ -124,7 +126,8 @@ for img_file in os.listdir(img_dir):
     img_name = img_file[:-4]
     print img_path
     thresh_img, data_gray_img = Pre_treat().get_data_thresh_img(img_path)
-    img_thresh_flt = thresh_img[:,two_flt_width_start:two_flt_width_end + 1]
+    img_thresh_flt = thresh_img[:, two_flt_width_start:two_flt_width_end + 1]
+    img_thresh_plan_arrive = thresh_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
     data_flt = data_gray_img[:, two_flt_width_start:two_flt_width_end + 1]
     data_plan_arrive = data_gray_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
     #避免边缘的锯齿，缩小边缘
@@ -145,6 +148,8 @@ for img_file in os.listdir(img_dir):
     
     for i in range(len(y_start_list)):
         line = img_thresh_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
+        line_thresh_arrive = img_thresh_plan_arrive[y_start_list[i]-3:y_end_list[i]+1+3,:]
+        
         line_color = data_flt[y_start_list[i]-3:y_end_list[i]+1+3,:]
         line_data_plan_arrive = \
         data_plan_arrive[y_start_list[i]-3:y_end_list[i]+1+3,:]
@@ -173,13 +178,13 @@ for img_file in os.listdir(img_dir):
             #cv2.imshow("Character_1", Character_1)
             #cv2.waitKey(0)
             if Character.sum()<>0:
-                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + 'plane.tif', Character)
+                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + 'stand.tif', Character)
                 character_list.append(Character.tolist())
+        
 
 character_series = pd.Series(character_list)
 no_repeat = character_series.value_counts()
 for number,item in enumerate(no_repeat.index):
-    print item, no_repeat.iloc[number]
     np_item = np.array(item)        
     cv2.imwrite('no_repeat_character/' + \
     str(no_repeat.iloc[number]) + '_' + \
