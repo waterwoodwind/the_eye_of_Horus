@@ -150,5 +150,9 @@ fabric.properties
 ### self ###
 .idea
 *.bmp
-*.tif
+multi_img
+line
+no_repeat_character
+single_img
+
 航班号_机号_机位.csv
