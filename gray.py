@@ -11,6 +11,21 @@ import pandas as pd
 import numpy as np
 
 import shutil
+
+zero_data_height_start = 167
+zero_data_height_end = 1002
+
+two_flt_width_start = 124
+two_flt_width_end = 337
+two_plan_lanch_start = 797
+two_plan_lanch_end = 850
+two_index_start = 3
+two_index_end = 43
+line_plane_number_start = 93
+line_plane_number_end = 132
+
+character_width = 9
+
 def clear_dirs(path):
     if os.path.exists(path):
         shutil.rmtree(path)
@@ -61,7 +76,7 @@ class Pre_treat(object):
     def get_data_thresh_img(self, img_path):    
         img=cv2.imread(img_path)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        data_img = gray[171:1006+1,4:1907+1]
+        data_img = gray[zero_data_height_start:zero_data_height_end+1,4:1907+1]
         ret,thresh_img = cv2.threshold(data_img,208,255,cv2.THRESH_BINARY_INV)
         return thresh_img, data_img
     
@@ -106,11 +121,11 @@ for img_file in os.listdir(img_dir):
     img_name = img_file[:-4]
     print img_path
     thresh_img, data_img = Pre_treat().get_data_thresh_img(img_path)
-    img_thresh_flt = thresh_img[:,162:426]
-    data_flt = data_img[:, 162:426]
-    data_plan_arrive = data_img[:, 1403:1466+1]
+    img_thresh_flt = thresh_img[:,two_flt_width_start:two_flt_width_end + 1]
+    data_flt = data_img[:, two_flt_width_start:two_flt_width_end + 1]
+    data_plan_arrive = data_img[:, two_plan_lanch_start:two_plan_lanch_end+1]
     #避免边缘的锯齿，缩小边缘
-    img_index = thresh_img[:, 9:52]
+    img_index = thresh_img[:, two_index_start:two_index_end +1]
     
     y_start_list, y_end_list, x_start_list, x_end_list = \
     Pre_treat().y_x_border_list(img_index)
@@ -132,8 +147,8 @@ for img_file in os.listdir(img_dir):
         data_plan_arrive[y_start_list[i]-3:y_end_list[i]+1+3,:]
         line_merge = np.hstack((line_color, line_data_plan_arrive))
         cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.bmp', line_merge)
-        for j in range(221, 257,12):
-            Character = line[:, j: j+12]
+        for j in range(line_plane_number_start, line_plane_number_end + 1,character_width+1):
+            Character = line[:, j: j+character_width+1]
             #cv2.imshow("Character_1", Character_1)
             #cv2.waitKey(0)
             if Character.sum()<>0:
