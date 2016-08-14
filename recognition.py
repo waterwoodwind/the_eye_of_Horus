@@ -85,7 +85,6 @@ if __name__ == '__main__':
     list_flt_data = []
     for img_file in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img_file)
-        img_name = img_file[:-4]
         print img_path
         #最原始的图
         img = cv2.imread(img_path)
