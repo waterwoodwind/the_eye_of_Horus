@@ -37,47 +37,54 @@ line_data_plan_arrive_end = 48
 character_width = 9
 
 
+class Recognise(object):
+    def __init__(self):
+        train_main_path = 'train_data'
+        train_version_path = '2016-08-13 18-39'
+        self.dir_path = os.path.join(train_main_path, train_version_path)
 
-def get_train_path():
-    train_main_path = 'train_data'
-    train_version_path = '2016-08-13 18-39'
-    dir_path = os.path.join(train_main_path, train_version_path)
-    return dir_path
-    
-def load_data(dir_path):
-    list_img = []
-    list_digits_target = []
-    recognition_dict = {}
-    for digit_name in os.listdir(dir_path):
-        digit_path = os.path.join(dir_path, digit_name)
-        img = cv2.imread(digit_path)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray_one = gray.reshape(-1)
-        list_gray_one = gray_one.tolist()
-        str_gray_one = str(list_gray_one)
-        list_img.append(str_gray_one)
-        list_digits_target.append(digit_name[-5:-4])
-        recognition_dict[str_gray_one] = digit_name[-5:-4]
-        
-    
-    return recognition_dict
 
-def np_to_digit(recg_dict, line, start, end):
-    str_data = ''
-    for j in range(start, end,character_width+1):
-        Character = line[:, j: j+character_width+1]
-        #cv2.imshow("Character_1", Character_1)
-        #cv2.waitKey(0)
-        if Character.sum()<>0:
-            Character_one = Character.reshape(-1)
-            list_Character_one = Character_one.tolist()
-            str_Character_one = str(list_Character_one)
-            str_data = str_data + recg_dict[str_Character_one]
-    return str_data
+    def get_train_path(self):
+        train_main_path = 'train_data'
+        train_version_path = '2016-08-13 18-39'
+        dir_path = os.path.join(train_main_path, train_version_path)
+        return dir_path
+
+    def load_data(self, dir_path):
+        list_img = []
+        list_digits_target = []
+        recognition_dict = {}
+        for digit_name in os.listdir(dir_path):
+            digit_path = os.path.join(dir_path, digit_name)
+            img = cv2.imread(digit_path)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            gray_one = gray.reshape(-1)
+            list_gray_one = gray_one.tolist()
+            str_gray_one = str(list_gray_one)
+            list_img.append(str_gray_one)
+            list_digits_target.append(digit_name[-5:-4])
+            recognition_dict[str_gray_one] = digit_name[-5:-4]
+
+
+        return recognition_dict
+
+    def np_to_digit(self, line, start, end):
+        recg_dict = self.load_data(self.dir_path)
+        str_data = ''
+        for j in range(start, end,character_width+1):
+            Character = line[:, j: j+character_width+1]
+            #cv2.imshow("Character_1", Character_1)
+            #cv2.waitKey(0)
+            if Character.sum()<>0:
+                Character_one = Character.reshape(-1)
+                list_Character_one = Character_one.tolist()
+                str_Character_one = str(list_Character_one)
+                str_data = str_data + recg_dict[str_Character_one]
+        return str_data
         
 if __name__ == '__main__':
-    train_path = get_train_path()
-    recognition_dict = load_data(train_path)
+    train_path = Recognise().get_train_path()
+    recognition_dict = Recognise().load_data(train_path)
     
     character_list = []
     img_dir = "multi_img"
@@ -125,24 +132,24 @@ if __name__ == '__main__':
             
             
             
-            str_flt_number = np_to_digit(recognition_dict, 
+            str_flt_number = Recognise().np_to_digit(recognition_dict,
                                          line,
                                          line_flt_number_start, 
                                          line_flt_number_end + 1)
                                          
             
-            str_plane_number = np_to_digit(recognition_dict, 
+            str_plane_number = Recognise().np_to_digit(recognition_dict,
                                          line,
                                          line_plane_number_start, 
                                          line_plane_number_end + 1)
                 
                     
-            str_stand_number =np_to_digit(recognition_dict, 
+            str_stand_number =Recognise().np_to_digit(recognition_dict,
                                          line,
                                          line_stand_start, 
                                          line_stand_end + 1)
                                          
-            str_plan_arrive_number = np_to_digit(recognition_dict, 
+            str_plan_arrive_number = Recognise().np_to_digit(recognition_dict,
                                                  line_thresh_arrive,
                                                  0, 
                                                  39 + 1)

@@ -100,8 +100,8 @@ class Flt_data_zone(object):
 
 class Character(object):
     def __init__(self):
-        self.height = 9
-        self.width = 13
+        self.height = 13
+        self.width = 9
         self.head = 3
 
 class Layout(object):
