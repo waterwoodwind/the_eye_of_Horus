@@ -40,7 +40,7 @@ character_width = 9
 class Recognise(object):
     def __init__(self):
         train_main_path = 'train_data'
-        train_version_path = '2016-08-13 18-39'
+        train_version_path = '2016-08-17_08-26'
         self.dir_path = os.path.join(train_main_path, train_version_path)
 
 
