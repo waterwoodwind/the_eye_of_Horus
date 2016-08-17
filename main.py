@@ -58,6 +58,7 @@ if __name__ == '__main__':
 
     no_repeat_list_flt_data = Filter().get_no_repeat(list_flt_data)
     own_company_flt_list = Filter().get_own_company(list_flt_data)
-    df_flt_data = pd.DataFrame(own_company_flt_list)
+    no_repeat_last_list = Filter().get_no_repeat(own_company_flt_list)
+    df_flt_data = pd.DataFrame(no_repeat_last_list)
     df_flt_data.to_csv(u'航班号_机号_机位.csv', encoding= 'utf-8', header=False, index=False)
     df_flt_data.to_excel(u'航班号_机号_机位.xlsx', encoding= 'utf-8', header=False, index=False)
