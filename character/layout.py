@@ -1,11 +1,11 @@
 #coding=utf-8
-from matplotlib import pyplot as plt
-import numpy as np
-import cv2
 import os
 
-from gray import Pre_treat
-from gray import clear_dir
+import cv2
+
+from character.gray import Pre_treat
+from character.gray import clear_dir
+
 
 class header(object):
     

@@ -1,4 +1,4 @@
-
+﻿
 # Created by https://www.gitignore.io/api/python,pycharm
 
 ### Python ###
@@ -154,6 +154,5 @@ multi_img
 line
 no_repeat_character
 single_img
-character
 航班号_机号_机位.csv
 航班号_机号_机位.xlsx

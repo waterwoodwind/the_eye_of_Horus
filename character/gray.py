@@ -11,9 +11,6 @@ import pandas as pd
 import numpy as np
 
 import shutil
-
-
-
 zero_data_height_start = 167
 zero_data_height_end = 1002
 

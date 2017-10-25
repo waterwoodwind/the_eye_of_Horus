@@ -5,17 +5,14 @@ Created on Sat Aug 13 18:51:43 2016
 @author: Administrator
 """
 
-import cv2
 import os
+
+import cv2
 import numpy as np
-from gray import Pre_treat
-from gray import header
-
-
 import pandas as pd
-import numpy as np
 
-import shutil
+from character.gray import Pre_treat
+from character.gray import header
 
 zero_data_height_start = 167
 zero_data_height_end = 1002
