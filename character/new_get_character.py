@@ -28,7 +28,7 @@ if __name__ == '__main__':
         #灰度化
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #裁剪得wps数据区域
-        data_img = gray[164:991,30:1893]
+        data_img = gray_img[164:991,30:1893]
         #二值化 反转        
         ret,thresh_img = cv2.threshold(data_img,160,255,cv2.THRESH_BINARY_INV)
         plt.imshow(thresh_img, cmap = 'gray',interpolation = 'bicubic')
