@@ -17,7 +17,7 @@ def show_img(img_name):
     cv2.destroyAllWindows()
     
 if __name__ == '__main__':
-    img_dir = "image"
+    img_dir = "F:/the_eye_of_hulu/multi_img"
     for img_file in os.listdir(img_dir):
         print img_file
         img_path = os.path.join(img_dir, img_file)
@@ -34,5 +34,7 @@ if __name__ == '__main__':
         plt.imshow(thresh_img, cmap = 'gray',interpolation = 'bicubic')
         plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
         plt.show()
-        cv2.imwrite('thresh_img.png', thresh_img)
+        img_name = img_file + 'thresh_img.png'
+        cv2.imwrite(img_name, thresh_img)
+        
         
