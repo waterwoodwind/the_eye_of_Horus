@@ -10,6 +10,7 @@ import os
 import pandas as pd
 import numpy as np
 import shutil
+import copy
 from matplotlib import pyplot as plt
 
 # 参数依次为list,抬头,X轴标签,Y轴标签,XY轴的范围
@@ -44,6 +45,23 @@ class Pre_treat(object):
         
         return x_shadow
     
+    def search_range(self, in_shadow_list):
+        shadow_list = copy.deepcopy(in_shadow_list)
+        #非零的数归一化
+        for index, item in enumerate(shadow_list):
+            if item<>0:
+                shadow_list[index] = 1 
+        if 0 in shadow_list:
+            ls2 = [str(i) for i in shadow_list]
+            nonzero_string= ''.join(ls2)
+            begin_index = nonzero_string.find('1')
+            end_index = nonzero_string.rfind('1')
+        else:
+            begin_index = 0
+            end_index = len(shadow_list)
+        return begin_index, end_index
+        
+    
 if __name__ == '__main__':
     d = os.path.dirname(__file__)
     print d
@@ -62,26 +80,20 @@ if __name__ == '__main__':
     #二值化 反转        
     ret,thresh_img = cv2.threshold(gray_img,160,1,cv2.THRESH_BINARY_INV)
     #裁剪得wps表格数据区域
-    data_img = thresh_img[164:991,30:1893]
+    excel_img = thresh_img[164:991,30:1893]
     plt.imshow(data_img, cmap = 'gray',interpolation = 'bicubic')
-    cv2.imwrite(img_file, data_img)
+    cv2.imwrite(img_file, excel_img)
     
     # 搜索获取实际数据区域
-    x_shadow_list = Pre_treat().x_shadow_list(data_img)
-    y_shadow_list = Pre_treat().y_shadow_list(data_img)
+    x_shadow_list = Pre_treat().x_shadow_list(excel_img)
+    y_shadow_list = Pre_treat().y_shadow_list(excel_img)
     plt.bar(range(len(x_shadow_list)), x_shadow_list)
     plt.show
-    
-    ##非零的数归一化
-    the_one_x_list = x_shadow_list
-    for index, item in enumerate(the_one_x_list):
-        if item<>0:
-            the_one_x_list[index] = 1 
-    if 0 in the_one_x_list:
-        ls2 = [str(i) for i in x_shadow_list]
-        nonzero_string= ''.join(ls2)
-        begin = nonzero_string.find('1')
-        end = nonzero_string.rfind('1')    
+    ##获取有数据区域的上下界
+    x_begin,x_end = Pre_treat().search_range(x_shadow_list)  
+    y_begin,y_end = Pre_treat().search_range(y_shadow_list)
+    data_img = excel_img[y_begin:y_end+1, x_begin:x_end+1]
+   
             
         
     
