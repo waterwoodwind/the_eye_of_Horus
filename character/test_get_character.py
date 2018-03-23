@@ -95,6 +95,7 @@ if __name__ == '__main__':
     data_img = excel_img[y_begin:y_end+1, x_begin:x_end+1]
     cv2.imwrite("data_img.bmp", data_img)
     
+    
     # 取出表格
     ## 取出水平线，先腐蚀再膨胀
     kernel=np.uint8(np.zeros((23,23)))  
@@ -121,7 +122,22 @@ if __name__ == '__main__':
     #得到交点图
     joints = cv2.bitwise_and(horizon_dilated, vertical_dilated)
     cv2.imwrite("joints.bmp", joints)        
-        
+    
+
+    #划分单元格
+    #本例特殊情况，无左界，无上界，底部可能有无下界的残余
+    horizon_shadow_list = Pre_treat().y_shadow_list(joints)
+    up_boder = 0
+    i = 1
+    for index, item in enumerate(horizon_shadow_list):
+        if item == 0:
+            continue
+        else:
+            down_boder = index - 1 + 1
+            line = data_img[up_boder: down_boder]
+            cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.bmp', line)
+            up_boder = index + 1
+            i = i + 1
     
     
     
