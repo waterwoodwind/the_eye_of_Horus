@@ -81,14 +81,14 @@ if __name__ == '__main__':
     ret,thresh_img = cv2.threshold(gray_img,160,255,cv2.THRESH_BINARY_INV)
     #裁剪得wps表格数据区域
     excel_img = thresh_img[164:991,30:1893]
-    plt.imshow(data_img, cmap = 'gray',interpolation = 'bicubic')
+    #plt.imshow(data_img, cmap = 'gray',interpolation = 'bicubic')
     cv2.imwrite(img_file, excel_img)
     
     # 搜索获取实际数据区域
     x_shadow_list = Pre_treat().x_shadow_list(excel_img)
     y_shadow_list = Pre_treat().y_shadow_list(excel_img)
-    plt.bar(range(len(x_shadow_list)), x_shadow_list)
-    plt.show
+    #plt.bar(range(len(x_shadow_list)), x_shadow_list)
+    #plt.show
     ##获取有数据区域的上下界
     x_begin,x_end = Pre_treat().search_range(x_shadow_list)  
     y_begin,y_end = Pre_treat().search_range(y_shadow_list)
@@ -113,13 +113,10 @@ if __name__ == '__main__':
     vertical_eroded = cv2.erode(data_img,vertical_kernel); 
     #膨胀图像    
     vertical_dilated = cv2.dilate(vertical_eroded,vertical_kernel)
-    plt.imshow(vertical_dilated)
     
     #得到表格网格线
     mask = cv2.add(horizon_dilated, vertical_dilated)
     cv2.imwrite("mask.bmp", mask)
-    plt.imshow(mask)
-    plt.imshow(data_img)
     
     #得到交点图
     joints = cv2.bitwise_and(horizon_dilated, vertical_dilated)
