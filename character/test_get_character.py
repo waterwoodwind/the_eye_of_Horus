@@ -78,7 +78,7 @@ if __name__ == '__main__':
     #灰度化
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #二值化 反转        
-    ret,thresh_img = cv2.threshold(gray_img,160,1,cv2.THRESH_BINARY_INV)
+    ret,thresh_img = cv2.threshold(gray_img,160,255,cv2.THRESH_BINARY_INV)
     #裁剪得wps表格数据区域
     excel_img = thresh_img[164:991,30:1893]
     plt.imshow(data_img, cmap = 'gray',interpolation = 'bicubic')
@@ -93,8 +93,37 @@ if __name__ == '__main__':
     x_begin,x_end = Pre_treat().search_range(x_shadow_list)  
     y_begin,y_end = Pre_treat().search_range(y_shadow_list)
     data_img = excel_img[y_begin:y_end+1, x_begin:x_end+1]
-   
-            
+    cv2.imwrite("data_img.bmp", data_img)
+    
+    # 取出表格
+    ## 取出水平线，先腐蚀再膨胀
+    kernel=np.uint8(np.zeros((23,23)))  
+    for x in range(23):  
+        kernel[11,x]=255;
+    #腐蚀图像   
+    horizon_eroded = cv2.erode(data_img,kernel); 
+    #膨胀图像    
+    horizon_dilated = cv2.dilate(horizon_eroded,kernel)
+    
+    ## 取出垂直线，先腐蚀再膨胀
+    vertical_kernel=np.uint8(np.zeros((23,23)))  
+    for x in range(23):  
+        vertical_kernel[x,11]=255;
+    #腐蚀图像   
+    vertical_eroded = cv2.erode(data_img,vertical_kernel); 
+    #膨胀图像    
+    vertical_dilated = cv2.dilate(vertical_eroded,vertical_kernel)
+    plt.imshow(vertical_dilated)
+    
+    #得到表格网格线
+    mask = cv2.add(horizon_dilated, vertical_dilated)
+    cv2.imwrite("mask.bmp", mask)
+    plt.imshow(mask)
+    plt.imshow(data_img)
+    
+    #得到交点图
+    joints = cv2.bitwise_and(horizon_dilated, vertical_dilated)
+    cv2.imwrite("joints.bmp", joints)        
         
     
     
