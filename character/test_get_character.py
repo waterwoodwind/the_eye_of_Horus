@@ -125,19 +125,44 @@ if __name__ == '__main__':
     
 
     #划分单元格
-    #本例特殊情况，无左界，无上界，底部可能有无下界的残余
+    #本例情况，无合并单元格，无左界，无上界，底部可能有无下界的残余
     horizon_shadow_list = Pre_treat().y_shadow_list(joints)
-    up_boder = 0
+    mete_up_list = []
+    mete_down_list = []
+    up_border = 0
     i = 1
     for index, item in enumerate(horizon_shadow_list):
         if item == 0:
             continue
         else:
-            down_boder = index - 1 + 1
-            line = data_img[up_boder: down_boder]
+            down_border = index - 1 + 1
+            line = data_img[up_border: down_border]
             cv2.imwrite('line/'+ img_name+ '_line_' + str(i) + '.bmp', line)
-            up_boder = index + 1
+            mete_up_list.append(up_border)
+            mete_down_list.append(down_border)
+            up_border = index + 1
             i = i + 1
+            
+    vertical_shadow_list = Pre_treat().x_shadow_list(joints)
+    mete_left_list = []
+    mete_right_list = []
+    left_border = 0
+    i = 1
+    for index, item in enumerate(vertical_shadow_list):
+        if item == 0:
+            continue
+        else:
+            right_border = index - 1 + 1
+            column = data_img[0:int(data_img.shape[1]),left_border: right_border]
+            cv2.imwrite('column/'+ img_name+ '_column_' + str(i) + '.bmp', column)
+            mete_left_list.append(left_border)
+            mete_right_list.append(right_border)
+            left_border = index + 1
+            i = i + 1
+            
+            
+            
+    
     
     
     
