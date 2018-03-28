@@ -160,8 +160,16 @@ if __name__ == '__main__':
             left_border = index + 1
             i = i + 1
             
-            
-            
+    cell_img_list = []
+    line_img_list = []
+    for row,row_item in enumerate(mete_up_list):
+        line_img_list = []
+        for col, col_item in enumerate(mete_left_list):
+            cell_pic = data_img[mete_up_list[row]:mete_down_list[row],\
+                                mete_left_list[col]:mete_right_list[col]]
+            cv2.imwrite('cell/' + img_name + '_cell_' + str(row)+ '_' + str(col) + '.bmp', cell_pic)
+            line_img_list.append(cell_pic)
+        cell_img_list.append(line_img_list)
     
     
     
