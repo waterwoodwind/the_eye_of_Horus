@@ -82,7 +82,7 @@ if __name__ == '__main__':
     print d
     parent_path = os.path.dirname(d)
     print parent_path
-    img_dir = os.path.join(parent_path, "multi_img/2017")
+    img_dir = os.path.join(parent_path, "multi_img/2018")
     print img_dir
     character_list = []
     for img_file in os.listdir(img_dir):
@@ -97,7 +97,7 @@ if __name__ == '__main__':
         #二值化 反转        
         ret,thresh_img = cv2.threshold(gray_img,160,255,cv2.THRESH_BINARY_INV)
         #裁剪得wps表格数据区域
-        excel_img = thresh_img[164:991,30:1893]
+        excel_img = thresh_img[164:991,30:1325]
         #plt.imshow(data_img, cmap = 'gray',interpolation = 'bicubic')
         cv2.imwrite(img_file, excel_img)
         
@@ -184,8 +184,6 @@ if __name__ == '__main__':
             if row == 0:
                 continue
             for col, col_item in enumerate(mete_left_list):
-                if col in [6,7,8,10,11,14,15]:
-                    continue
                 cell_pic = data_img[mete_up_list[row]:mete_down_list[row],\
                                     mete_left_list[col]:mete_right_list[col]]
                 cv2.imwrite('cell/' + img_name + '_cell_' + str(row)+ '_' + str(col) + '.bmp', cell_pic)
@@ -204,25 +202,3 @@ if __name__ == '__main__':
         str(no_repeat.iloc[number]) + '_' + \
         str(number) + '.tif', np_item)
     #将含字图片识别为文字
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
