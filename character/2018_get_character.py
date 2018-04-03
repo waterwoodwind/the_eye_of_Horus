@@ -3,6 +3,7 @@
 Created on Wed Mar 21 13:54:44 2018
 
 @author: wangxin
+train_data:0403
 """
 
 import cv2
@@ -22,19 +23,32 @@ def draw_hist(myList,Title,Xlabel,Ylabel):
     plt.show()
     
 #从单元格中切分出数字字母符号    
-def cut_character(chr_img):    
+def cut_character(chr_img, img_name):    
     chr_list = []
+    sinogram_list = []
+    sinogram_width = 13
     chr_img_start = 2
     chr_img_end = chr_img.shape[1]
     chr_width = 7
-    for j in range(chr_img_start, chr_img_end + 1,chr_width):
+    j = chr_img_start
+    recg_dict = Recognise().load_data()
+    while j<chr_img_end:
         Character = chr_img[3:16, j: j+chr_width]
         #cv2.imshow("Character_1", Character_1)
         #cv2.waitKey(0)img_character
         if Character.sum()<>0:
-            cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + 'flt.tif', Character)
-            chr_list.append(Character.tolist())
-    return chr_list
+            if recg_dict.has_key(str(Character.reshape(-1).tolist())):
+                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', Character)
+                chr_list.append(Character.tolist())
+                j = j + chr_width
+            else:
+                sinogram = chr_img[3:16, j:j+sinogram_width]
+                cv2.imwrite('sinogram/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', sinogram)
+                sinogram_list.append(sinogram.tolist())
+                j = j + sinogram_width
+        else:
+            j = j + chr_width
+    return chr_list, sinogram_list
 
 #将不重复字符图片拆出并保存
 def get_and_save_no_repeat(character_list):
@@ -101,28 +115,30 @@ class Recognise(object):
         dir_path = os.path.join(parent_path, train_version_path)
         return dir_path
 
-    def load_data(self, dir_path):
+    def load_data(self):
         list_img = []
         list_digits_target = []
         recognition_dict = {}
-        for digit_name in os.listdir(dir_path):
-            digit_path = os.path.join(dir_path, digit_name)
+        for digit_file in os.listdir(self.dir_path):
+            digit_path = os.path.join(self.dir_path, digit_file)
             img = cv2.imread(digit_path)
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             gray_one = gray.reshape(-1)
             list_gray_one = gray_one.tolist()
             str_gray_one = str(list_gray_one)
             list_img.append(str_gray_one)
-            list_digits_target.append(digit_name[-5:-4])
-            recognition_dict[str_gray_one] = digit_name[-5:-4]
-
-
+            digit_name = digit_file[-5:-4]
+            list_digits_target.append(digit_name)
+            if digit_name == "!":
+                digit_name = "|"
+            if digit_name == ";":
+                digit_name = ":"
+            recognition_dict[str_gray_one] = digit_name
         return recognition_dict
 
     def np_to_digit(self, chr_img):
-        recg_dict = self.load_data(self.dir_path)
+        recg_dict = self.load_data()
         str_data = ''
-        chr_list = []
         chr_img_start = 2
         chr_img_end = chr_img.shape[1]
         chr_width = 7
@@ -149,6 +165,7 @@ if __name__ == '__main__':
     img_dir = os.path.join(parent_path, "multi_img/2018")
     print img_dir
     character_list = []
+    chinese_list = []
     cell_data_list = []
     for img_file in os.listdir(img_dir):
     
@@ -251,7 +268,9 @@ if __name__ == '__main__':
                                     mete_left_list[col]:mete_right_list[col]]
                 cv2.imwrite('cell/' + img_name + '_cell_' + str(row)+ '_' + str(col) + '.bmp', cell_pic)
                 line_img_list.append(cell_pic)
-                character_list.extend(cut_character(cell_pic))
+                e_list, s_list = cut_character(cell_pic, img_name)
+                character_list.extend(e_list)
+                chinese_list.extend(s_list)
             cell_img_list.append(line_img_list)
         
         #将含字图片识别为文字
@@ -263,11 +282,11 @@ if __name__ == '__main__':
             cell_data_list.append(line_data_list)
     
     #将不重复字符图片拆出并保存
-    #get_and_save_no_repeat(character_list)
+    get_and_save_no_repeat(chinese_list)
     
-    df_flt_data = pd.DataFrame(cell_data_list)
-    df_flt_data.to_csv(u'航班号_机号.csv', encoding= 'utf-8', header=False, index=False)
-    df_flt_data.to_excel(u'航班号_机号.xlsx', encoding= 'utf-8', header=False, index=False)
+    #df_flt_data = pd.DataFrame(cell_data_list)
+    #df_flt_data.to_csv(u'航班号_机号.csv', encoding= 'utf-8', header=False, index=False)
+    #df_flt_data.to_excel(u'航班号_机号.xlsx', encoding= 'utf-8', header=False, index=False)
     
         
         
