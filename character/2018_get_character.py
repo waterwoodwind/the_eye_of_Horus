@@ -36,6 +36,16 @@ def cut_character(chr_img):
             chr_list.append(Character.tolist())
     return chr_list
 
+#将不重复字符图片拆出并保存
+def get_and_save_no_repeat(character_list):
+    character_series = pd.Series(character_list)
+    no_repeat = character_series.value_counts()
+    for number,item in enumerate(no_repeat.index):
+        np_item = np.array(item)        
+        cv2.imwrite('no_repeat_character/' + \
+        str(no_repeat.iloc[number]) + '_' + \
+        str(number) + '.tif', np_item)
+        
 class Pre_treat(object):
     
     def __init__(self):
@@ -75,7 +85,61 @@ class Pre_treat(object):
             begin_index = 0
             end_index = len(shadow_list)
         return begin_index, end_index
-        
+
+class Recognise(object):
+    def __init__(self):
+        d = os.path.dirname(__file__)
+        parent_path = os.path.dirname(d)
+        train_version_path = 'train_data/no_repeat_0403'
+        self.dir_path = os.path.join(parent_path, train_version_path)
+
+
+    def get_train_path(self):
+        d = os.path.dirname(__file__)
+        parent_path = os.path.dirname(d)
+        train_version_path = 'train_data/no_repeat_0403'
+        dir_path = os.path.join(parent_path, train_version_path)
+        return dir_path
+
+    def load_data(self, dir_path):
+        list_img = []
+        list_digits_target = []
+        recognition_dict = {}
+        for digit_name in os.listdir(dir_path):
+            digit_path = os.path.join(dir_path, digit_name)
+            img = cv2.imread(digit_path)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            gray_one = gray.reshape(-1)
+            list_gray_one = gray_one.tolist()
+            str_gray_one = str(list_gray_one)
+            list_img.append(str_gray_one)
+            list_digits_target.append(digit_name[-5:-4])
+            recognition_dict[str_gray_one] = digit_name[-5:-4]
+
+
+        return recognition_dict
+
+    def np_to_digit(self, chr_img):
+        recg_dict = self.load_data(self.dir_path)
+        str_data = ''
+        chr_list = []
+        chr_img_start = 2
+        chr_img_end = chr_img.shape[1]
+        chr_width = 7
+        for j in range(chr_img_start, chr_img_end + 1,chr_width):
+            Character = chr_img[3:16, j: j+chr_width]
+            #cv2.imshow("Character_1", Character_1)
+            #cv2.waitKey(0)img_character
+            if Character.sum()<>0:
+                Character_one = Character.reshape(-1)
+                list_Character_one = Character_one.tolist()
+                str_Character_one = str(list_Character_one)
+                try:
+                    str_data = str_data + recg_dict[str_Character_one]
+                except:
+                    str_data = str_data + u"汉"
+        return str_data
+       
     
 if __name__ == '__main__':
     d = os.path.dirname(__file__)
@@ -85,6 +149,7 @@ if __name__ == '__main__':
     img_dir = os.path.join(parent_path, "multi_img/2018")
     print img_dir
     character_list = []
+    cell_data_list = []
     for img_file in os.listdir(img_dir):
     
         img_path = os.path.join(img_dir, img_file)
@@ -181,8 +246,6 @@ if __name__ == '__main__':
         line_img_list = []
         for row,row_item in enumerate(mete_up_list):
             line_img_list = []
-            if row == 0:
-                continue
             for col, col_item in enumerate(mete_left_list):
                 cell_pic = data_img[mete_up_list[row]:mete_down_list[row],\
                                     mete_left_list[col]:mete_right_list[col]]
@@ -191,14 +254,44 @@ if __name__ == '__main__':
                 character_list.extend(cut_character(cell_pic))
             cell_img_list.append(line_img_list)
         
+        #将含字图片识别为文字
+        for row,row_item in enumerate(cell_img_list):
+            line_data_list = []
+            for col, col_item in enumerate(row_item):
+                cell_data = Recognise().np_to_digit(col_item)
+                line_data_list.append(cell_data)
+            cell_data_list.append(line_data_list)
+    
+    #将不重复字符图片拆出并保存
+    #get_and_save_no_repeat(character_list)
+    
+    df_flt_data = pd.DataFrame(cell_data_list)
+    df_flt_data.to_csv(u'航班号_机号.csv', encoding= 'utf-8', header=False, index=False)
+    df_flt_data.to_excel(u'航班号_机号.xlsx', encoding= 'utf-8', header=False, index=False)
+    
         
-    
-    
-    character_series = pd.Series(character_list)
-    no_repeat = character_series.value_counts()
-    for number,item in enumerate(no_repeat.index):
-        np_item = np.array(item)        
-        cv2.imwrite('no_repeat_character/' + \
-        str(no_repeat.iloc[number]) + '_' + \
-        str(number) + '.tif', np_item)
-    #将含字图片识别为文字
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
