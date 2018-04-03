@@ -154,5 +154,6 @@ multi_img
 line
 no_repeat_character
 single_img
-航班号_机号_机位.csv
-航班号_机号_机位.xlsx
+航班号_机号.csv
+航班号_机号.xlsx
+/character
