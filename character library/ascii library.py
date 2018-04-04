@@ -10,14 +10,14 @@ import os
 import pygame
 import cv2
 
-chinese_dir = 'chinese'
+chinese_dir = 'ascii'
 if not os.path.exists(chinese_dir):
     os.mkdir(chinese_dir)
 
 pygame.init()
 start,end = (0x30,0x5b) # 大写字母编码范围
 #33,126 ascii字符范围
-for codepoint in range(19968,40869+1):
+for codepoint in range(33,126+1):
     word = unichr(codepoint)
     font = pygame.font.Font("simsun.ttc", 13)
     # 当前目录下要有微软雅黑的字体文件msyh.ttc,或者去c:\Windows\Fonts目录下找
