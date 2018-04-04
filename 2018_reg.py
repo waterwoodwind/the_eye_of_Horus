@@ -163,6 +163,16 @@ class Cut(object):
             cell_img_list.append(line_img_list)
         return cell_img_list
     
+    def img_to_str(self, im_at_fixed):
+        im_at_fixed_one = im_at_fixed.reshape(-1)
+        list_thresh_one = im_at_fixed_one.tolist()
+        for index, item in enumerate(list_thresh_one):
+            if item == 255:
+                list_thresh_one[index] = 1
+        list_thresh_one = [str(list_thresh_one[i]) for i in range(len(list_thresh_one))]
+        str_gray_one = "".join(list_thresh_one)
+        return str_gray_one
+    
     #从单元格中切分出数字字母符号    
     def cut_character(self, chr_img):    
         chr_list = []
@@ -177,7 +187,7 @@ class Cut(object):
             #cv2.imshow("Character_1", Character_1)
             #cv2.waitKey(0)img_character
             if Character.sum()<>0:
-                chr_key = Recognise().img_to_str(Character)
+                chr_key = self.img_to_str(Character)
                 if recg_dict.has_key(chr_key):
                     #cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', Character)
                     chr_list.append(chr_key)
@@ -232,8 +242,25 @@ class Recognise(object):
             recognition_dict[str_gray_one] = digit_name
         return recognition_dict
     
+    def bin_to_text(self, bin_data_list):
+        recg_dict = self.load_data()
+        result_list = []
+        for row, row_item in enumerate(bin_data_list):
+            row_list = []
+            for cell,cell_item in enumerate(row_item):
+                str_data = ""
+                for bin_data in cell_item:
+                    try:
+                        str_data = str_data + recg_dict[bin_data]
+                    except:
+                        str_data = str_data + u"汉"
+                row_list.append(str_data)
+            result_list.append(row_list)
+        return result_list
+    
 if __name__ == '__main__':
     img_dir = Pre_treat().local_dir()
+    result_list = []
     for img_file in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img_file)
         img_name = img_file[:-4]
@@ -246,6 +273,9 @@ if __name__ == '__main__':
         #cv2.imwrite(img_name+"_contain_img.bmp", contain_img)
         cell_img_list = Cut().cell(contain_img)
         str_list = Cut().character(cell_img_list)
-        
+        text_list = Recognise().bin_to_text(str_list)
+        result_list.extend(text_list)
+    df_flt_data = pd.DataFrame(result_list)
+    df_flt_data.to_excel(u'航班号_机号.xlsx', encoding= 'utf-8', header=False, index=False)
         
         
