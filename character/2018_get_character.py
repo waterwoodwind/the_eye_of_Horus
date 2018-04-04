@@ -37,13 +37,14 @@ def cut_character(chr_img, img_name):
         #cv2.imshow("Character_1", Character_1)
         #cv2.waitKey(0)img_character
         if Character.sum()<>0:
-            if recg_dict.has_key(str(Character.reshape(-1).tolist())):
-                cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', Character)
+            chr_key = Recognise().img_to_str(Character)
+            if recg_dict.has_key(chr_key):
+                #cv2.imwrite('character/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', Character)
                 chr_list.append(Character.tolist())
                 j = j + chr_width
             else:
                 sinogram = chr_img[3:16, j:j+sinogram_width]
-                cv2.imwrite('sinogram/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', sinogram)
+                #cv2.imwrite('sinogram/'+ img_name+ '_line_' + str(i) + '_' + str(j) + '.tif', sinogram)
                 sinogram_list.append(sinogram.tolist())
                 j = j + sinogram_width
         else:
@@ -114,7 +115,14 @@ class Recognise(object):
         train_version_path = 'train_data/no_repeat_0403'
         dir_path = os.path.join(parent_path, train_version_path)
         return dir_path
-
+    
+    def img_to_str(self, im_at_fixed):
+        im_at_fixed_one = im_at_fixed.reshape(-1)
+        list_thresh_one = im_at_fixed_one.tolist()
+        list_thresh_one = [str(list_thresh_one[i]) for i in range(len(list_thresh_one))]
+        str_gray_one = "".join(list_thresh_one)
+        return str_gray_one
+    
     def load_data(self):
         list_img = []
         list_digits_target = []
@@ -123,9 +131,8 @@ class Recognise(object):
             digit_path = os.path.join(self.dir_path, digit_file)
             img = cv2.imread(digit_path)
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            gray_one = gray.reshape(-1)
-            list_gray_one = gray_one.tolist()
-            str_gray_one = str(list_gray_one)
+            retval, im_at_fixed = cv2.threshold(gray, 160, 1, cv2.THRESH_BINARY)
+            str_gray_one = self.img_to_str(im_at_fixed)
             list_img.append(str_gray_one)
             digit_name = digit_file[-5:-4]
             list_digits_target.append(digit_name)
@@ -158,6 +165,7 @@ class Recognise(object):
        
     
 if __name__ == '__main__':
+    recg_dict = Recognise().load_data()
     d = os.path.dirname(__file__)
     print d
     parent_path = os.path.dirname(d)
@@ -177,7 +185,7 @@ if __name__ == '__main__':
         #灰度化
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #二值化 反转        
-        ret,thresh_img = cv2.threshold(gray_img,160,255,cv2.THRESH_BINARY_INV)
+        ret,thresh_img = cv2.threshold(gray_img,160,1,cv2.THRESH_BINARY_INV)
         #裁剪得wps表格数据区域
         excel_img = thresh_img[164:991,30:1325]
         #plt.imshow(data_img, cmap = 'gray',interpolation = 'bicubic')
@@ -283,7 +291,7 @@ if __name__ == '__main__':
     
     #将不重复字符图片拆出并保存
     get_and_save_no_repeat(chinese_list)
-    
+    recg_dict = Recognise().load_data()
     #df_flt_data = pd.DataFrame(cell_data_list)
     #df_flt_data.to_csv(u'航班号_机号.csv', encoding= 'utf-8', header=False, index=False)
     #df_flt_data.to_excel(u'航班号_机号.xlsx', encoding= 'utf-8', header=False, index=False)
