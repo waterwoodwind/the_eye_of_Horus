@@ -214,7 +214,8 @@ class Cut(object):
 class Recognise(object):
     def __init__(self):
         self.train_dir_path = 'character library/ascii'
-    
+        self.train_chinese_dir_path = 'character library/chinese'
+        
     def img_to_str(self, im_at_fixed):
         im_at_fixed_one = im_at_fixed.reshape(-1)
         list_thresh_one = im_at_fixed_one.tolist()
@@ -242,18 +243,39 @@ class Recognise(object):
             recognition_dict[str_gray_one] = digit_name
         return recognition_dict
     
+    def load_chinese_data(self):
+        list_img = []
+        list_digits_target = []
+        recognition_dict = {}
+        for digit_file in os.listdir(self.train_chinese_dir_path):
+            digit_path = os.path.join(self.train_chinese_dir_path, digit_file)
+            img = cv2.imread(digit_path)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            retval, im_at_fixed = cv2.threshold(gray, 160, 1, cv2.THRESH_BINARY)
+            str_gray_one = self.img_to_str(im_at_fixed)
+            list_img.append(str_gray_one)
+            digit_name = digit_file[:-4]
+            digit_name = unichr(int(digit_name))
+            list_digits_target.append(digit_name)
+            recognition_dict[str_gray_one] = digit_name
+        return recognition_dict
+    
     def bin_to_text(self, bin_data_list):
         recg_dict = self.load_data()
+        recg_ch_dict = self.load_chinese_data()
         result_list = []
         for row, row_item in enumerate(bin_data_list):
             row_list = []
             for cell,cell_item in enumerate(row_item):
                 str_data = ""
                 for bin_data in cell_item:
-                    try:
+                    if recg_dict.has_key(bin_data):
                         str_data = str_data + recg_dict[bin_data]
-                    except:
-                        str_data = str_data + u"汉"
+                    else:
+                        try:
+                            str_data = str_data + recg_ch_dict[bin_data]
+                        except:
+                            str_data = str_data + u'汉'
                 row_list.append(str_data)
             result_list.append(row_list)
         return result_list
