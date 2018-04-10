@@ -279,7 +279,21 @@ class Recognise(object):
                 row_list.append(str_data)
             result_list.append(row_list)
         return result_list
-    
+
+#去掉东航空客机型        
+def remove_mu_a(result_list):
+    flt_list = copy.deepcopy(result_list)
+    count = 0
+    for index in range(len(flt_list)-1,-1,-1):
+        row_item = flt_list[index]
+        print index, row_item[5]
+        if row_item[1].find(u'MU')<>-1 or row_item[2].find(u'MU')<>-1:
+            if  row_item[5].find(u'B')==-1:
+                count = count + 1
+                print index, count, row_item[5]
+                flt_list.pop(index)
+    return flt_list
+                
 if __name__ == '__main__':
     img_dir = Pre_treat().local_dir()
     result_list = []
@@ -297,7 +311,10 @@ if __name__ == '__main__':
         str_list = Cut().character(cell_img_list)
         text_list = Recognise().bin_to_text(str_list)
         result_list.extend(text_list)
-    df_flt_data = pd.DataFrame(result_list)
+    rem_list = remove_mu_a(result_list)
+    df_flt_data = pd.DataFrame(rem_list)
     df_flt_data.to_excel(u'航班号_机号.xlsx', encoding= 'utf-8', header=False, index=False)
-        
+    
+    
+                
         
