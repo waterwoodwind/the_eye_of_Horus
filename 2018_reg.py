@@ -12,6 +12,9 @@ import numpy as np
 import shutil
 import copy
 from matplotlib import pyplot as plt
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class Pre_treat(object):
     def __init__(self):
