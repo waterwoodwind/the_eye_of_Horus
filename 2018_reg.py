@@ -74,7 +74,7 @@ class Cut(object):
         pass
     
     def excel(self, img):
-        result_img = img[164:991,30:1325]
+        result_img = img[165:991,34:1325]
         return result_img
     
     def contain(self, img):
@@ -300,6 +300,7 @@ def remove_mu_a(result_list):
 if __name__ == '__main__':
     img_dir = Pre_treat().local_dir()
     result_list = []
+    print "begin"
     for img_file in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img_file)
         img_name = img_file[:-4]
