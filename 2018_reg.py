@@ -74,7 +74,7 @@ class Cut(object):
         pass
     
     def excel(self, img):
-        result_img = img[165:991,34:1325]
+        result_img = img[163:991,30:1325]
         return result_img
     
     def contain(self, img):
@@ -317,7 +317,7 @@ if __name__ == '__main__':
         result_list.extend(text_list)
     rem_list = remove_mu_a(result_list)
     df_flt_data = pd.DataFrame(rem_list)
-    df_flt_data.to_excel(u'航班号_机号.xlsx', encoding= 'utf-8', header=False, index=False)
+    df_flt_data.to_excel(u'C:/Users/Administrator/Desktop/航班数据采集/航班数据.xlsx', encoding= 'utf-8', header=False, index=False)
     
     
                 
