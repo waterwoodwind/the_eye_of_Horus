@@ -73,8 +73,8 @@ class Cut(object):
     def __init__(self):
         pass
     
-    def excel(self, img):
-        result_img = img[163:991,30:1325]
+    def excel(self, img, excel_y_begin, excel_x_begin):
+        result_img = img[excel_y_begin:991,excel_x_begin:1325]
         return result_img
     
     def contain(self, img):
@@ -301,6 +301,12 @@ if __name__ == '__main__':
     img_dir = Pre_treat().local_dir()
     result_list = []
     print "begin"
+    loc_file = open(u'C:/Users/Administrator/Desktop/航班数据采集/坐标参数.txt')
+    loc_txt = loc_file.read()
+    loc_file.close()
+    loc_arr = loc_txt.split('\n')    
+    excel_y_begin = int(loc_arr[1])
+    excel_x_begin = int(loc_arr[0])
     for img_file in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img_file)
         img_name = img_file[:-4]
@@ -308,7 +314,7 @@ if __name__ == '__main__':
         #最原始的图
         img = cv2.imread(img_path)
         thresh_img = Pre_treat().gray_thresh_255(img)
-        excel_img = Cut().excel(thresh_img)
+        excel_img = Cut().excel(thresh_img, excel_y_begin, excel_x_begin)
         contain_img = Cut().contain(excel_img)
         #cv2.imwrite(img_name+"_contain_img.bmp", contain_img)
         cell_img_list = Cut().cell(contain_img)
@@ -316,7 +322,7 @@ if __name__ == '__main__':
         text_list = Recognise().bin_to_text(str_list)
         result_list.extend(text_list)
     rem_list = remove_mu_a(result_list)
-    df_flt_data = pd.DataFrame(rem_list)
+    df_flt_data = pd.DataFrame(result_list)
     df_flt_data.to_excel(u'C:/Users/Administrator/Desktop/航班数据采集/航班数据.xlsx', encoding= 'utf-8', header=False, index=False)
     
     
