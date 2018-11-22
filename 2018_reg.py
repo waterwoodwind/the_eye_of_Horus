@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import shutil
 import copy
+import time
 from matplotlib import pyplot as plt
 import sys
 reload(sys)
@@ -323,7 +324,9 @@ if __name__ == '__main__':
         result_list.extend(text_list)
     rem_list = remove_mu_a(result_list)
     df_flt_data = pd.DataFrame(result_list)
-    df_flt_data.to_excel(u'C:/Users/Administrator/Desktop/航班数据采集/航班数据.xlsx', encoding= 'utf-8', header=False, index=False)
+    str_time = time.strftime("%Y-%m-%d %H%M%S")
+    output_path = u'C:/Users/Administrator/Desktop/航班数据采集/航班数据' + str_time + '.xlsx'
+    df_flt_data.to_excel(output_path, encoding= 'utf-8', header=False, index=False)
     
     
                 
